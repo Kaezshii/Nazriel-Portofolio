@@ -148,21 +148,45 @@ const FishCanvas = memo(({ depth }) => {
     ];
 
     function drawFish(x,y,size,dir,alpha,shark) {
-      ctx.save(); ctx.globalAlpha=alpha;
-      ctx.fillStyle = shark ? "rgba(4,18,34,0.6)" : "rgba(8,45,80,0.65)";
-      if (dir===-1) { ctx.translate(x+size,y); ctx.scale(-1,1); } else ctx.translate(x,y);
-      const s = size/60; ctx.scale(s,s);
-      ctx.beginPath();
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      if (dir === -1) { ctx.translate(x + size, y); ctx.scale(-1, 1); }
+      else ctx.translate(x, y);
+      const s = size / 60;
+      ctx.scale(s, s);
+
       if (shark) {
-        ctx.moveTo(0,20); ctx.quadraticCurveTo(30,12,70,16); ctx.quadraticCurveTo(110,10,160,18);
-        ctx.quadraticCurveTo(180,20,190,20); ctx.quadraticCurveTo(180,22,160,26);
-        ctx.quadraticCurveTo(110,30,70,26); ctx.quadraticCurveTo(30,28,0,20); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(80,18); ctx.quadraticCurveTo(90,4,100,2); ctx.quadraticCurveTo(105,10,108,18); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "rgba(4,18,34,0.6)";
+        // body
+        ctx.beginPath();
+        ctx.moveTo(0,20); ctx.quadraticCurveTo(50,10,120,16);
+        ctx.quadraticCurveTo(160,18,190,20);
+        ctx.quadraticCurveTo(160,22,120,24);
+        ctx.quadraticCurveTo(50,28,0,20);
+        ctx.fill();
+        // dorsal fin — separate path
+        ctx.beginPath();
+        ctx.moveTo(70,16); ctx.lineTo(82,2); ctx.lineTo(96,16); ctx.closePath();
+        ctx.fill();
+        // tail
+        ctx.beginPath();
+        ctx.moveTo(185,18); ctx.lineTo(200,6); ctx.lineTo(196,20);
+        ctx.lineTo(200,34); ctx.lineTo(185,22); ctx.closePath();
+        ctx.fill();
       } else {
-        ctx.moveTo(0,16); ctx.quadraticCurveTo(12,8,22,10); ctx.quadraticCurveTo(32,4,46,8);
-        ctx.quadraticCurveTo(55,10,60,16); ctx.quadraticCurveTo(55,22,46,24);
-        ctx.quadraticCurveTo(32,28,22,22); ctx.quadraticCurveTo(12,24,0,16); ctx.fill();
-        ctx.beginPath(); ctx.moveTo(46,8); ctx.quadraticCurveTo(53,4,58,0); ctx.quadraticCurveTo(56,8,55,16); ctx.quadraticCurveTo(56,24,58,32); ctx.quadraticCurveTo(53,28,46,24); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = "rgba(8,45,80,0.65)";
+        // body only — clean ellipse-like shape
+        ctx.beginPath();
+        ctx.moveTo(8,16);
+        ctx.quadraticCurveTo(20,6, 38,9);
+        ctx.quadraticCurveTo(52,5, 60,16);
+        ctx.quadraticCurveTo(52,27, 38,23);
+        ctx.quadraticCurveTo(20,26, 8,16);
+        ctx.fill();
+        // tail — separate small triangle, no overlap
+        ctx.beginPath();
+        ctx.moveTo(8,16); ctx.lineTo(-8,6); ctx.lineTo(-4,16); ctx.lineTo(-8,26); ctx.closePath();
+        ctx.fill();
       }
       ctx.restore();
     }
@@ -225,14 +249,9 @@ const IslandScene = memo(({ lineEnd, opacity, y }) => (
           <stop offset="0%"   stopColor="#1a6fa0" stopOpacity="0.85"/>
           <stop offset="100%" stopColor="#0d3a5c" stopOpacity="0.75"/>
         </linearGradient>
-        <filter id="st" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="n"/>
-          <feColorMatrix type="saturate" values="0" in="n" result="gn"/>
-          <feBlend in="SourceGraphic" in2="gn" mode="overlay"/>
-        </filter>
       </defs>
       <ellipse cx={250} cy={392} rx={285} ry={32} fill="url(#wg)"/>
-      <ellipse cx={205} cy={360} rx={158} ry={46} fill="url(#sg)" filter="url(#st)"/>
+      <ellipse cx={205} cy={360} rx={158} ry={46} fill="url(#sg)"/>
       <ellipse cx={205} cy={356} rx={155} ry={28} fill="#c08850" opacity={0.45}/>
       <ellipse cx={190} cy={347} rx={88}  ry={11} fill="#e0b878" opacity={0.28}/>
       <motion.g animate={{ rotateZ:[-1.2,1.2,-1.2] }} transition={{ duration:3.8, repeat:Infinity, ease:"easeInOut" }} style={{ transformOrigin:"162px 363px" }}>
@@ -327,18 +346,10 @@ const DraggablePhoto = memo(({ onLineEnd, containerRef }) => {
     <motion.div ref={ref} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
       style={{ x:sx, y:sy, scale:sc, cursor:"grab", touchAction:"none", userSelect:"none", willChange:"transform" }}>
       <div style={{ width:130, height:130, borderRadius:"50%", background:"linear-gradient(135deg,rgba(20,80,140,0.5),rgba(8,40,80,0.4))", border:"2px solid rgba(100,180,255,0.5)", boxShadow:"0 0 28px rgba(60,150,255,0.25),0 0 56px rgba(30,100,200,0.12),inset 0 0 18px rgba(0,0,0,0.35)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", position:"relative" }}>
-        <img
-  src="/Nazriel-Portofolio/photo.jpg"
-  alt="Nazriel Sakhiy Kurniadi"
-  style={{
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    borderRadius: "50%",
-    position: "absolute",
-    inset: 0,
-  }}
-/>
+        <svg width={80} height={80} viewBox="0 0 80 80" fill="none">
+          <circle cx={40} cy={28} r={17} fill="rgba(140,210,255,0.35)"/>
+          <path d="M10 76 Q10 50 40 50 Q70 50 70 76" fill="rgba(140,210,255,0.3)"/>
+        </svg>
         <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 60%)", pointerEvents:"none" }}/>
       </div>
       <motion.p animate={{ opacity:[0.25,0.7,0.25] }} transition={{ duration:2.8, repeat:Infinity }}
@@ -404,19 +415,46 @@ const BubbleField = memo(() => (
 ));
 
 // ─────────────────────────────────────────────
-// CURSOR GLOW
+// CUSTOM CURSOR — dot + lagging ring, pure RAF
 // ─────────────────────────────────────────────
-const CursorGlow = () => {
-  const mx = useMotionValue(-300), my = useMotionValue(-300);
+const CustomCursor = () => {
+  const dotRef  = useRef(null);
+  const ringRef = useRef(null);
+  const pos     = useRef({ x:-100, y:-100 });
+  const ring    = useRef({ x:-100, y:-100 });
+
   useEffect(() => {
-    const move = (e) => { mx.set(e.clientX); my.set(e.clientY); };
+    const move = (e) => { pos.current = { x: e.clientX, y: e.clientY }; };
     window.addEventListener("mousemove", move, { passive:true });
-    return () => window.removeEventListener("mousemove", move);
-  }, [mx, my]);
-  const x = useSpring(mx, { stiffness:100, damping:26 });
-  const y = useSpring(my, { stiffness:100, damping:26 });
+
+    let raf;
+    const tick = () => {
+      // dot: instant
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${pos.current.x - 4}px, ${pos.current.y - 4}px)`;
+      }
+      // ring: lerp behind
+      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ring.current.x - 18}px, ${ring.current.y - 18}px)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    return () => {
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <motion.div style={{ x, y, position:"fixed", top:0, left:0, width:380, height:380, borderRadius:"50%", background:"radial-gradient(circle,rgba(50,130,255,0.042) 0%,transparent 70%)", pointerEvents:"none", zIndex:0, marginTop:-190, marginLeft:-190 }}/>
+    <>
+      {/* Dot */}
+      <div ref={dotRef} style={{ position:"fixed", top:0, left:0, width:8, height:8, borderRadius:"50%", background:"rgba(140,210,255,0.95)", pointerEvents:"none", zIndex:99999, willChange:"transform" }}/>
+      {/* Ring */}
+      <div ref={ringRef} style={{ position:"fixed", top:0, left:0, width:36, height:36, borderRadius:"50%", border:"1.5px solid rgba(100,180,255,0.55)", pointerEvents:"none", zIndex:99999, willChange:"transform" }}/>
+    </>
   );
 };
 
@@ -586,7 +624,7 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Space+Mono:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
-        body{overflow-x:hidden;background:#020a12}
+        body{overflow-x:hidden;background:#020a12;cursor:none}
         ::-webkit-scrollbar{width:3px}
         ::-webkit-scrollbar-track{background:#010810}
         ::-webkit-scrollbar-thumb{background:rgba(52,122,192,0.36);border-radius:2px}
@@ -604,8 +642,8 @@ export default function App() {
           {/* Fixed gradient background */}
           <motion.div style={{ background:bgGrad, position:"fixed", inset:0, zIndex:0 }}/>
 
-          {/* Cursor glow */}
-          <CursorGlow/>
+          {/* Cursor */}
+          <CustomCursor/>
 
           {/* Canvas-based systems (60fps, zero DOM overhead) */}
           <ParticleCanvas depth={depth}/>
@@ -622,13 +660,13 @@ export default function App() {
             </div>
 
             {/* RIGHT: Name + photo + content */}
-            <div style={{ flex:"0 0 54%", position:"relative", display:"flex", flexDirection:"column", justifyContent:"center", padding:"80px 52px 60px 28px" }}>
+            <div style={{ flex:"0 0 54%", position:"relative", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"80px 48px 60px 28px", textAlign:"center" }}>
 
               <Waves/>
 
               {/* ── NAME — first thing you see ── */}
               <motion.div initial={{ opacity:0, y:-18 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.85, delay:0.1 }}
-                style={{ marginBottom:22, position:"relative", zIndex:15 }}>
+                style={{ marginBottom:22, position:"relative", zIndex:15, width:"100%" }}>
                 <p style={{ fontFamily:"'Space Mono',monospace", fontSize:9.5, letterSpacing:"0.35em", color:PALETTE.accentDim, textTransform:"uppercase", marginBottom:10 }}>
                   Information Technology Student
                 </p>
@@ -639,23 +677,23 @@ export default function App() {
                     Kurniadi
                   </motion.span>
                 </h1>
-                <motion.div style={{ width:54, height:1.5, background:"linear-gradient(90deg,rgba(78,158,255,0.58),transparent)", marginTop:16 }}
+                <motion.div style={{ width:54, height:1.5, background:"linear-gradient(90deg,rgba(78,158,255,0.58),transparent)", margin:"16px auto 0" }}
                   initial={{ scaleX:0, originX:0 }} animate={{ scaleX:1 }} transition={{ duration:0.9, delay:0.6 }}/>
               </motion.div>
 
               {/* ── DRAGGABLE PHOTO ── */}
               <motion.div initial={{ opacity:0, scale:0.82 }} animate={{ opacity:1, scale:1 }} transition={{ duration:0.8, delay:0.28 }}
-                style={{ position:"relative", zIndex:20, marginBottom:28, alignSelf:"flex-start" }}>
+                style={{ position:"relative", zIndex:20, marginBottom:28 }}>
                 <DraggablePhoto onLineEnd={handleLineEnd} containerRef={heroRef}/>
               </motion.div>
 
               {/* ── TAGLINE + CTA ── */}
               <motion.div initial={{ opacity:0, y:22 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.85, delay:0.42 }}
-                style={{ position:"relative", zIndex:15, maxWidth:390 }}>
+                style={{ position:"relative", zIndex:15, maxWidth:390, textAlign:"center" }}>
                 <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:16, color:PALETTE.textDim, lineHeight:1.82, marginBottom:30 }}>
                   Engineering systems at the intersection of clarity and complexity — from surface interfaces to the deep architecture below.
                 </p>
-                <div style={{ display:"flex", gap:11, flexWrap:"wrap" }}>
+                <div style={{ display:"flex", gap:11, flexWrap:"wrap", justifyContent:"center" }}>
                   {[
                     { label:"Dive Deeper ↓", href:"#about",  filled:true  },
                     { label:"View Skills",   href:"#skills", filled:false },
@@ -671,7 +709,7 @@ export default function App() {
               </motion.div>
 
               {/* Scroll indicator */}
-              <motion.div style={{ position:"absolute", bottom:26, right:50, display:"flex", flexDirection:"column", alignItems:"center", gap:6, opacity:scrollIndOp, zIndex:15 }}>
+              <motion.div style={{ position:"absolute", bottom:26, left:"50%", transform:"translateX(-50%)", display:"flex", flexDirection:"column", alignItems:"center", gap:6, opacity:scrollIndOp, zIndex:15 }}>
                 <motion.div animate={{ y:[0,8,0] }} transition={{ duration:2, repeat:Infinity }}
                   style={{ width:19, height:32, border:"1.5px solid rgba(88,172,255,0.3)", borderRadius:10, display:"flex", justifyContent:"center", paddingTop:5 }}>
                   <motion.div animate={{ y:[0,8,0], opacity:[1,0,1] }} transition={{ duration:2, repeat:Infinity }}
