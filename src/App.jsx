@@ -352,10 +352,12 @@ const DraggablePhoto = memo(({ onLineEnd, containerRef }) => {
     <motion.div ref={ref} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
       style={{ x:sx, y:sy, scale:sc, cursor:"none", touchAction:"none", userSelect:"none", willChange:"transform" }}>
       <div style={{ width:130, height:130, borderRadius:"50%", background:"linear-gradient(135deg,rgba(20,80,140,0.5),rgba(8,40,80,0.4))", border:"2px solid rgba(100,180,255,0.5)", boxShadow:"0 0 28px rgba(60,150,255,0.25),0 0 56px rgba(30,100,200,0.12),inset 0 0 18px rgba(0,0,0,0.35)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", position:"relative" }}>
-        <svg width={80} height={80} viewBox="0 0 80 80" fill="none">
-          <circle cx={40} cy={28} r={17} fill="rgba(140,210,255,0.35)"/>
-          <path d="M10 76 Q10 50 40 50 Q70 50 70 76" fill="rgba(140,210,255,0.3)"/>
-        </svg>
+        <img
+          src="https://i.postimg.cc/NGCQp3Hk/ar.png"
+          alt="Nazriel Sakhiy Kurniadi"
+          style={{ width:"100%", height:"100%", objectFit:"cover", borderRadius:"50%", position:"absolute", inset:0 }}
+          draggable={false}
+        />
         <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 60%)", pointerEvents:"none" }}/>
       </div>
       <motion.p animate={{ opacity:[0.25,0.7,0.25] }} transition={{ duration:2.8, repeat:Infinity }}
@@ -629,8 +631,9 @@ export default function App() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Space+Mono:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth}
-        body{overflow-x:hidden;background:#020a12;cursor:none}
+        html{scroll-behavior:smooth;width:100%}
+        body{overflow-x:hidden;background:#020a12;cursor:none;width:100%;min-width:100%}
+        #root{width:100%;min-width:100%}
         ::-webkit-scrollbar{width:3px}
         ::-webkit-scrollbar-track{background:#010810}
         ::-webkit-scrollbar-thumb{background:rgba(52,122,192,0.36);border-radius:2px}
@@ -643,7 +646,7 @@ export default function App() {
       </AnimatePresence>
 
       {loaded && (
-        <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.7 }}>
+        <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.7 }} style={{ width:"100vw", position:"relative", overflowX:"hidden" }}>
 
           {/* Fixed gradient background */}
           <motion.div style={{ background:bgGrad, position:"fixed", inset:0, zIndex:0 }}/>
@@ -749,90 +752,98 @@ export default function App() {
           </section>
 
           {/* ══════════════ ABOUT ══════════════ */}
-          <section id="about" style={{ position:"relative", zIndex:10, padding:"108px clamp(20px,6vw,88px)", maxWidth:840, margin:"0 auto" }} aria-label="About">
-            <LightRays depth={depth}/>
-            <BubbleField/>
-            <SectionHeader label="/ 01 — Identity" title="Who Navigates These Waters" subtitle="A student, a builder, a thinker — charting depth through disciplined curiosity."/>
-            <Reveal>
-              <div style={{ background:"rgba(6,22,46,0.58)", backdropFilter:"blur(22px)", border:"1px solid rgba(46,112,202,0.14)", borderRadius:18, padding:"42px clamp(24px,5vw,50px)", position:"relative", overflow:"hidden" }}>
-                <div style={{ position:"absolute", top:0, left:0, right:0, height:1.5, background:"linear-gradient(90deg,transparent,rgba(72,155,255,0.36),transparent)" }}/>
-                {[
-                  "I'm an Information Technology student with a genuine passion for understanding how systems work beneath the surface — not just how to use them, but how to build, optimize, and architect them with intention.",
-                  "My academic focus spans software development, system design, and the engineering principles that transform functional code into elegant, maintainable systems. I believe the most interesting problems live at the intersection of logic and creativity.",
-                  "I approach every challenge as a layered exploration — starting from requirements, descending through architecture, and surfacing with solutions that are both technically rigorous and purposefully designed. Continuous learning is not a habit but a necessity in a field that reinvents itself as rapidly as ours.",
-                  "This portfolio itself reflects that philosophy: not just a display of what I know, but a demonstration of how I think, how I build, and how I persist through complexity.",
-                ].map((t,i) => (
-                  <Reveal key={i} delay={i*0.1} y={12}>
-                    <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:17, color:"rgba(152,210,255,0.76)", lineHeight:1.9, marginBottom:i<3?20:0 }}>{t}</p>
-                  </Reveal>
-                ))}
-              </div>
-            </Reveal>
+          <section id="about" aria-label="About" style={{ position:"relative", zIndex:10, width:"100%" }}>
+            <div style={{ maxWidth:840, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
+              <LightRays depth={depth}/>
+              <BubbleField/>
+              <SectionHeader label="/ 01 — Identity" title="Who Navigates These Waters" subtitle="A student, a builder, a thinker — charting depth through disciplined curiosity."/>
+              <Reveal>
+                <div style={{ background:"rgba(6,22,46,0.58)", backdropFilter:"blur(22px)", border:"1px solid rgba(46,112,202,0.14)", borderRadius:18, padding:"42px clamp(24px,5vw,50px)", position:"relative", overflow:"hidden" }}>
+                  <div style={{ position:"absolute", top:0, left:0, right:0, height:1.5, background:"linear-gradient(90deg,transparent,rgba(72,155,255,0.36),transparent)" }}/>
+                  {[
+                    "I'm an Information Technology student with a genuine passion for understanding how systems work beneath the surface — not just how to use them, but how to build, optimize, and architect them with intention.",
+                    "My academic focus spans software development, system design, and the engineering principles that transform functional code into elegant, maintainable systems. I believe the most interesting problems live at the intersection of logic and creativity.",
+                    "I approach every challenge as a layered exploration — starting from requirements, descending through architecture, and surfacing with solutions that are both technically rigorous and purposefully designed. Continuous learning is not a habit but a necessity in a field that reinvents itself as rapidly as ours.",
+                    "This portfolio itself reflects that philosophy: not just a display of what I know, but a demonstration of how I think, how I build, and how I persist through complexity.",
+                  ].map((t,i) => (
+                    <Reveal key={i} delay={i*0.1} y={12}>
+                      <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:17, color:"rgba(152,210,255,0.76)", lineHeight:1.9, marginBottom:i<3?20:0 }}>{t}</p>
+                    </Reveal>
+                  ))}
+                </div>
+              </Reveal>
+            </div>
           </section>
 
           {/* ══════════════ SKILLS ══════════════ */}
-          <section id="skills" style={{ position:"relative", zIndex:10, padding:"108px clamp(20px,6vw,88px)", maxWidth:1060, margin:"0 auto" }} aria-label="Skills">
-            <SectionHeader label="/ 02 — Capability" title="The Deep Ocean Ecosystem" subtitle="Skills cultivated through pressure, iteration, and depth of exploration."/>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(285px,1fr))", gap:20 }}>
-              <SkillCard title="Technical Skills" icon="⚙️" delay={0}    skills={["HTML5 & CSS3","JavaScript ES2024","React","Python","SQL","REST APIs","Git & Version Control","Data Structures","Algorithms","System Design"]}/>
-              <SkillCard title="Development Tools" icon="🔧" delay={0.1}  skills={["VS Code","Vite","Node.js","npm / yarn","Git & GitHub","Figma","Chrome DevTools","Postman","Linux CLI","Docker Fundamentals"]}/>
-              <SkillCard title="Core Strengths"    icon="🧠" delay={0.2}  skills={["Analytical Thinking","System Architecture","Attention to Detail","Rapid Learning","Problem Decomposition","Technical Communication","Clean Code","Performance Awareness"]}/>
+          <section id="skills" aria-label="Skills" style={{ position:"relative", zIndex:10, width:"100%" }}>
+            <div style={{ maxWidth:1060, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
+              <SectionHeader label="/ 02 — Capability" title="The Deep Ocean Ecosystem" subtitle="Skills cultivated through pressure, iteration, and depth of exploration."/>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(285px,1fr))", gap:20 }}>
+                <SkillCard title="Technical Skills" icon="⚙️" delay={0}   skills={["HTML5 & CSS3","JavaScript ES2024","React","Python","SQL","REST APIs","Git & Version Control","Data Structures","Algorithms","System Design"]}/>
+                <SkillCard title="Development Tools" icon="🔧" delay={0.1} skills={["VS Code","Vite","Node.js","npm / yarn","Git & GitHub","Figma","Chrome DevTools","Postman","Linux CLI","Docker Fundamentals"]}/>
+                <SkillCard title="Core Strengths"    icon="🧠" delay={0.2} skills={["Analytical Thinking","System Architecture","Attention to Detail","Rapid Learning","Problem Decomposition","Technical Communication","Clean Code","Performance Awareness"]}/>
+              </div>
             </div>
           </section>
 
           {/* ══════════════ PROJECTS ══════════════ */}
-          <section id="projects" style={{ position:"relative", zIndex:10, padding:"108px clamp(20px,6vw,88px)", maxWidth:960, margin:"0 auto" }} aria-label="Projects">
-            <SectionHeader label="/ 03 — Engineering" title="Constructed With Intent" subtitle="Systems designed from the seabed up — each a demonstration of deliberate architecture."/>
-            <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
-              <ProjectCard title="Deep Ocean Portfolio" tag="Live" delay={0}
-                desc="A production-grade interactive portfolio engineered with React, Framer Motion, and a centralized scroll-driven depth controller. Every visual layer responds dynamically to scroll progress."
-                points={[
-                  "Centralized depth controller interpolating gradients, brightness & parallax via scroll",
-                  "Canvas-based particle & fish systems — 60fps with zero DOM node overhead",
-                  "Physics-based draggable photo: spring animation, elastic bounds, fishing line tension",
-                  "Scroll-triggered fish scaling with depth; low-opacity shark at deepest layer",
-                  "Staged loading sequence with multi-phase initialization simulation",
-                  "Glassmorphic skill panels with staggered whileInView entrance animations",
-                  "SVG research station contact section with animated glowing windows",
-                  "Fully responsive 320px–4K, Rules-of-Hooks compliant, memo-optimized throughout",
-                ]}/>
-              <ProjectCard title="Ongoing Development" tag="In Progress" delay={0.16}
-                desc="The ocean floor is never fully mapped. Future systems include full-stack applications, algorithmic visualizations, and tools built from first principles."
-                points={[
-                  "Component-ready architecture — new projects require zero structural changes",
-                  "Scalable declarative data model for filtering by domain and technology",
-                  "Depth-tagged categorization system planned for future rollout",
-                ]}/>
+          <section id="projects" aria-label="Projects" style={{ position:"relative", zIndex:10, width:"100%" }}>
+            <div style={{ maxWidth:960, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
+              <SectionHeader label="/ 03 — Engineering" title="Constructed With Intent" subtitle="Systems designed from the seabed up — each a demonstration of deliberate architecture."/>
+              <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
+                <ProjectCard title="Deep Ocean Portfolio" tag="Live" delay={0}
+                  desc="A production-grade interactive portfolio engineered with React, Framer Motion, and a centralized scroll-driven depth controller. Every visual layer responds dynamically to scroll progress."
+                  points={[
+                    "Centralized depth controller interpolating gradients, brightness & parallax via scroll",
+                    "Canvas-based particle & fish systems — 60fps with zero DOM node overhead",
+                    "Physics-based draggable photo: spring animation, elastic bounds, fishing line tension",
+                    "Scroll-triggered fish scaling with depth; low-opacity shark at deepest layer",
+                    "Staged loading sequence with multi-phase initialization simulation",
+                    "Glassmorphic skill panels with staggered whileInView entrance animations",
+                    "SVG research station contact section with animated glowing windows",
+                    "Fully responsive 320px–4K, Rules-of-Hooks compliant, memo-optimized throughout",
+                  ]}/>
+                <ProjectCard title="Ongoing Development" tag="In Progress" delay={0.16}
+                  desc="The ocean floor is never fully mapped. Future systems include full-stack applications, algorithmic visualizations, and tools built from first principles."
+                  points={[
+                    "Component-ready architecture — new projects require zero structural changes",
+                    "Scalable declarative data model for filtering by domain and technology",
+                    "Depth-tagged categorization system planned for future rollout",
+                  ]}/>
+              </div>
             </div>
           </section>
 
           {/* ══════════════ CONTACT ══════════════ */}
-          <section id="contact" style={{ position:"relative", zIndex:10, padding:"108px clamp(20px,6vw,76px) 76px", maxWidth:840, margin:"0 auto" }} aria-label="Contact">
-            <SectionHeader label="/ 04 — Contact" title="The Research Station" subtitle="Deepest layer. Signal reaches here. Reach out."/>
-            <ResearchStation/>
-            <Reveal>
-              <p style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(17px,2.7vw,25px)", fontStyle:"italic", fontWeight:600, color:"rgba(162,216,255,0.7)", textAlign:"center", lineHeight:1.58, maxWidth:548, margin:"0 auto 50px" }}>
-                "The best collaborations begin at depth — where the noise fades and the signal becomes clear."
-              </p>
-            </Reveal>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(155px,1fr))", gap:14, marginTop:50 }}>
-              <ContactPanel icon="📄" label="Resume"   sub="Download CV"  href={CV_URL}                                              delay={0}/>
-              <ContactPanel icon="💼" label="LinkedIn" sub="Connect"       href="https://www.linkedin.com/in/nazriel-sakhiy-kurniadi" delay={0.08}/>
-              <ContactPanel icon="✉️" label="Email"    sub="nazzxsk@gmail.com" href="mailto:nazzxsk@gmail.com"                       delay={0.16}/>
-              <ContactPanel icon="🐙" label="GitHub"   sub="Kaezshii"      href="https://github.com/Kaezshii"                        delay={0.24}/>
-            </div>
-            <Reveal delay={0.38}>
-              <div style={{ textAlign:"center", marginTop:88, paddingBottom:58 }}>
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:16, marginBottom:13 }}>
-                  <div style={{ height:1, width:68, background:"rgba(52,122,192,0.22)" }}/>
-                  <svg width={13} height={13} viewBox="0 0 13 13"><circle cx={6.5} cy={6.5} r={5.5} stroke="rgba(72,152,255,0.28)" strokeWidth={1} fill="none"/><circle cx={6.5} cy={6.5} r={2.5} fill="rgba(72,152,255,0.36)"/></svg>
-                  <div style={{ height:1, width:68, background:"rgba(52,122,192,0.22)" }}/>
-                </div>
-                <p style={{ fontFamily:"'Space Mono',monospace", fontSize:9, letterSpacing:"0.22em", color:"rgba(52,115,188,0.3)", textTransform:"uppercase" }}>
-                  — depth: maximum — signal: strong —
+          <section id="contact" aria-label="Contact" style={{ position:"relative", zIndex:10, width:"100%" }}>
+            <div style={{ maxWidth:840, margin:"0 auto", padding:"108px clamp(20px,6vw,76px)" }}>
+              <SectionHeader label="/ 04 — Contact" title="The Research Station" subtitle="Deepest layer. Signal reaches here. Reach out."/>
+              <ResearchStation/>
+              <Reveal>
+                <p style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(17px,2.7vw,25px)", fontStyle:"italic", fontWeight:600, color:"rgba(162,216,255,0.7)", textAlign:"center", lineHeight:1.58, maxWidth:548, margin:"0 auto 50px" }}>
+                  "The best collaborations begin at depth — where the noise fades and the signal becomes clear."
                 </p>
+              </Reveal>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(155px,1fr))", gap:14, marginTop:50 }}>
+                <ContactPanel icon="📄" label="Resume"   sub="Download CV"      href={CV_URL}                                              delay={0}/>
+                <ContactPanel icon="💼" label="LinkedIn" sub="Connect"           href="https://www.linkedin.com/in/nazriel-sakhiy-kurniadi" delay={0.08}/>
+                <ContactPanel icon="✉️" label="Email"    sub="nazzxsk@gmail.com" href="mailto:nazzxsk@gmail.com"                           delay={0.16}/>
+                <ContactPanel icon="🐙" label="GitHub"   sub="Kaezshii"          href="https://github.com/Kaezshii"                        delay={0.24}/>
               </div>
-            </Reveal>
+              <Reveal delay={0.38}>
+                <div style={{ textAlign:"center", marginTop:88, paddingBottom:58 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:16, marginBottom:13 }}>
+                    <div style={{ height:1, width:68, background:"rgba(52,122,192,0.22)" }}/>
+                    <svg width={13} height={13} viewBox="0 0 13 13"><circle cx={6.5} cy={6.5} r={5.5} stroke="rgba(72,152,255,0.28)" strokeWidth={1} fill="none"/><circle cx={6.5} cy={6.5} r={2.5} fill="rgba(72,152,255,0.36)"/></svg>
+                    <div style={{ height:1, width:68, background:"rgba(52,122,192,0.22)" }}/>
+                  </div>
+                  <p style={{ fontFamily:"'Space Mono',monospace", fontSize:9, letterSpacing:"0.22em", color:"rgba(52,115,188,0.3)", textTransform:"uppercase" }}>
+                    — depth: maximum — signal: strong —
+                  </p>
+                </div>
+              </Reveal>
+            </div>
           </section>
 
           {/* Scroll progress bar */}
