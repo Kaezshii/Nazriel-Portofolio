@@ -237,8 +237,8 @@ const FishingLine = memo(({ start, end }) => {
 // ISLAND SCENE
 // ─────────────────────────────────────────────
 const IslandScene = memo(({ lineEnd, opacity, y }) => (
-  <motion.div style={{ opacity, y, width:"100%", height:"100%", display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
-    <svg viewBox="0 0 700 380" style={{ width:"100%", maxWidth:680, height:"auto" }}>
+  <motion.div style={{ opacity, y, width:"100%", display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+    <svg viewBox="0 0 700 380" style={{ width:"100%", maxWidth:680, height:"auto", display:"block", margin:"0 auto" }}>
       <defs>
         <radialGradient id="sg" cx="50%" cy="30%" r="70%">
           <stop offset="0%"   stopColor="#d4a96a"/>
@@ -674,7 +674,7 @@ export default function App() {
           </motion.nav>
 
           {/* ══════════════ HERO ══════════════ */}
-          <section ref={heroRef} style={{ position:"relative", zIndex:10, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start", overflow:"hidden", paddingTop:0 }} aria-label="Hero — Surface">
+          <section ref={heroRef} style={{ position:"relative", zIndex:10, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start" }} aria-label="Hero — Surface">
 
             {/* Waves behind everything */}
             <Waves/>
@@ -726,10 +726,10 @@ export default function App() {
             </div>
 
             {/* ── HERO LOWER: island scene centered at bottom ── */}
-            <div style={{ width:"100%", flex:1, position:"relative", display:"flex", alignItems:"flex-end", justifyContent:"center", minHeight:340, zIndex:12 }}>
+            <div style={{ width:"100%", flex:1, position:"relative", display:"flex", alignItems:"flex-end", justifyContent:"center", minHeight:340, zIndex:12, paddingBottom:60 }}>
 
-              {/* Island with parallax */}
-              <motion.div style={{ x:px, y:py, position:"relative", width:"100%", maxWidth:680, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+              {/* Island — centered, subtle y-only parallax */}
+              <motion.div style={{ y:py, width:"100%", maxWidth:680, display:"flex", alignItems:"flex-end", justifyContent:"center", margin:"0 auto", flexShrink:0 }}>
                 <IslandScene lineEnd={lineEnd} opacity={islandOpacity} y={islandY}/>
               </motion.div>
 
