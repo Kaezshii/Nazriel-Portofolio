@@ -218,16 +218,16 @@ const FishCanvas = memo(({ depth }) => {
 // ─────────────────────────────────────────────
 const FishingLine = memo(({ start, end }) => {
   if (!end) return null;
-  const dist    = Math.hypot(end.x-start.x, end.y-start.y);
-  const tension = Math.min(dist/260, 1);
-  const sag     = (1-tension)*48 + tension*6;
-  const mx = (start.x+end.x)/2, my = (start.y+end.y)/2+sag;
+  const dist    = Math.hypot(end.x - start.x, end.y - start.y);
+  const tension = Math.min(dist / 320, 1);
+  const sag     = (1 - tension) * 52 + tension * 6;
+  const mx = (start.x + end.x) / 2, my = (start.y + end.y) / 2 + sag;
   return (
     <path
       d={`M${start.x} ${start.y} Q${mx} ${my} ${end.x} ${end.y}`}
-      stroke={`rgba(200,175,135,${0.42+tension*0.38})`}
-      strokeWidth={tension>0.75 ? 1 : 1.6}
-      strokeDasharray={tension>0.88 ? "4 3" : undefined}
+      stroke={`rgba(200,175,135,${0.42 + tension * 0.38})`}
+      strokeWidth={tension > 0.75 ? 1 : 1.6}
+      strokeDasharray={tension > 0.88 ? "4 3" : undefined}
       fill="none"
     />
   );
@@ -237,8 +237,8 @@ const FishingLine = memo(({ start, end }) => {
 // ISLAND SCENE
 // ─────────────────────────────────────────────
 const IslandScene = memo(({ lineEnd, opacity, y }) => (
-  <motion.div style={{ opacity, y, width:"100%", height:"100%", display:"flex", alignItems:"flex-end", justifyContent:"center", paddingBottom:"6%" }}>
-    <svg viewBox="0 0 500 420" style={{ width:"100%", maxWidth:480, height:"auto" }}>
+  <motion.div style={{ opacity, y, width:"100%", height:"100%", display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+    <svg viewBox="0 0 700 380" style={{ width:"100%", maxWidth:680, height:"auto" }}>
       <defs>
         <radialGradient id="sg" cx="50%" cy="30%" r="70%">
           <stop offset="0%"   stopColor="#d4a96a"/>
@@ -250,22 +250,26 @@ const IslandScene = memo(({ lineEnd, opacity, y }) => (
           <stop offset="100%" stopColor="#0d3a5c" stopOpacity="0.75"/>
         </linearGradient>
       </defs>
-      <ellipse cx={250} cy={392} rx={285} ry={32} fill="url(#wg)"/>
-      <ellipse cx={205} cy={360} rx={158} ry={46} fill="url(#sg)"/>
-      <ellipse cx={205} cy={356} rx={155} ry={28} fill="#c08850" opacity={0.45}/>
-      <ellipse cx={190} cy={347} rx={88}  ry={11} fill="#e0b878" opacity={0.28}/>
-      <motion.g animate={{ rotateZ:[-1.2,1.2,-1.2] }} transition={{ duration:3.8, repeat:Infinity, ease:"easeInOut" }} style={{ transformOrigin:"162px 363px" }}>
-        <path d="M162 363 Q160 322 163 282 Q165 252 166 218" stroke="#6b4226" strokeWidth={6.5} fill="none" strokeLinecap="round"/>
-        <path d="M166 218 Q142 188 112 198 Q136 207 166 218Z" fill="#2a7038" opacity={0.92}/>
-        <path d="M166 218 Q147 192 157 162 Q160 190 166 218Z" fill="#338844" opacity={0.9}/>
-        <path d="M166 218 Q192 180 212 190 Q191 204 166 218Z" fill="#2a7038" opacity={0.9}/>
-        <path d="M166 218 Q196 202 216 217 Q193 213 166 218Z" fill="#338844" opacity={0.85}/>
-        <path d="M166 218 Q152 226 126 220 Q149 219 166 218Z" fill="#2a7038" opacity={0.85}/>
-        <circle cx={164} cy={225} r={5}   fill="#7a3810"/>
-        <circle cx={173} cy={229} r={4}   fill="#6e3010"/>
-        <circle cx={156} cy={228} r={4.5} fill="#7a3810"/>
+      {/* Water */}
+      <ellipse cx={350} cy={368} rx={380} ry={30} fill="url(#wg)"/>
+      {/* Island */}
+      <ellipse cx={350} cy={338} rx={220} ry={44} fill="url(#sg)"/>
+      <ellipse cx={350} cy={332} rx={215} ry={26} fill="#c08850" opacity={0.45}/>
+      <ellipse cx={330} cy={322} rx={120} ry={10} fill="#e0b878" opacity={0.28}/>
+      {/* Tree */}
+      <motion.g animate={{ rotateZ:[-1.2,1.2,-1.2] }} transition={{ duration:3.8, repeat:Infinity, ease:"easeInOut" }} style={{ transformOrigin:"310px 342px" }}>
+        <path d="M310 342 Q308 302 312 262 Q314 232 315 198" stroke="#6b4226" strokeWidth={6.5} fill="none" strokeLinecap="round"/>
+        <path d="M315 198 Q291 168 261 178 Q285 187 315 198Z" fill="#2a7038" opacity={0.92}/>
+        <path d="M315 198 Q296 172 306 142 Q309 170 315 198Z" fill="#338844" opacity={0.9}/>
+        <path d="M315 198 Q341 160 361 170 Q340 184 315 198Z" fill="#2a7038" opacity={0.9}/>
+        <path d="M315 198 Q345 182 365 197 Q342 193 315 198Z" fill="#338844" opacity={0.85}/>
+        <path d="M315 198 Q301 206 275 200 Q298 199 315 198Z" fill="#2a7038" opacity={0.85}/>
+        <circle cx={313} cy={205} r={5}   fill="#7a3810"/>
+        <circle cx={322} cy={209} r={4}   fill="#6e3010"/>
+        <circle cx={305} cy={208} r={4.5} fill="#7a3810"/>
       </motion.g>
-      <g transform="translate(238,308)">
+      {/* Stickman */}
+      <g transform="translate(387,288)">
         <circle cx={0} cy={0} r={8} stroke="rgba(220,195,170,0.9)" strokeWidth={1.5} fill="none"/>
         <circle cx={-2.5} cy={-1} r={1} fill="rgba(220,195,170,0.9)"/>
         <circle cx={2.5}  cy={-1} r={1} fill="rgba(220,195,170,0.9)"/>
@@ -275,9 +279,11 @@ const IslandScene = memo(({ lineEnd, opacity, y }) => (
         <line x1={0} y1={32} x2={8}   y2={50} stroke="rgba(205,185,162,0.9)" strokeWidth={1.5}/>
         <line x1={0} y1={14} x2={18}  y2={22} stroke="rgba(205,185,162,0.9)" strokeWidth={1.5}/>
         <line x1={0} y1={14} x2={-12} y2={20} stroke="rgba(205,185,162,0.9)" strokeWidth={1.5}/>
-        <line x1={18} y1={22} x2={56} y2={-4} stroke="#8a6040" strokeWidth={2} strokeLinecap="round"/>
+        {/* Rod pointing up-left toward photo */}
+        <line x1={18} y1={22} x2={-10} y2={-20} stroke="#8a6040" strokeWidth={2} strokeLinecap="round"/>
       </g>
-      <FishingLine start={{ x:294, y:304 }} end={lineEnd}/>
+      {/* Dynamic fishing line — rod tip to photo */}
+      <FishingLine start={{ x:377, y:268 }} end={lineEnd}/>
     </svg>
   </motion.div>
 ));
@@ -314,7 +320,7 @@ const DraggablePhoto = memo(({ onLineEnd, containerRef }) => {
       if (!ref.current || !containerRef?.current) return;
       const pr = ref.current.getBoundingClientRect();
       const cr = containerRef.current.getBoundingClientRect();
-      onLineEnd({ x:(pr.left+pr.width/2-cr.left)/cr.width*500, y:(pr.top+pr.height/2-cr.top)/cr.height*420 });
+      onLineEnd({ x:(pr.left+pr.width/2-cr.left)/cr.width*700, y:(pr.top+pr.height/2-cr.top)/cr.height*380 });
     };
     const u1 = sx.onChange(report);
     const u2 = sy.onChange(report);
@@ -344,7 +350,7 @@ const DraggablePhoto = memo(({ onLineEnd, containerRef }) => {
 
   return (
     <motion.div ref={ref} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
-      style={{ x:sx, y:sy, scale:sc, cursor:"grab", touchAction:"none", userSelect:"none", willChange:"transform" }}>
+      style={{ x:sx, y:sy, scale:sc, cursor:"none", touchAction:"none", userSelect:"none", willChange:"transform" }}>
       <div style={{ width:130, height:130, borderRadius:"50%", background:"linear-gradient(135deg,rgba(20,80,140,0.5),rgba(8,40,80,0.4))", border:"2px solid rgba(100,180,255,0.5)", boxShadow:"0 0 28px rgba(60,150,255,0.25),0 0 56px rgba(30,100,200,0.12),inset 0 0 18px rgba(0,0,0,0.35)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden", position:"relative" }}>
         <svg width={80} height={80} viewBox="0 0 80 80" fill="none">
           <circle cx={40} cy={28} r={17} fill="rgba(140,210,255,0.35)"/>
@@ -649,73 +655,95 @@ export default function App() {
           <ParticleCanvas depth={depth}/>
           <FishCanvas depth={depth}/>
 
-          {/* ══════════════ HERO ══════════════ */}
-          <section ref={heroRef} style={{ position:"relative", zIndex:10, minHeight:"100vh", display:"flex", overflow:"hidden" }} aria-label="Hero — Surface">
+          {/* ══════════════ NAVBAR ══════════════ */}
+          <motion.nav initial={{ opacity:0, y:-20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.8, delay:0.2 }}
+            style={{ position:"fixed", top:0, left:0, right:0, zIndex:100, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"22px 48px", background:"linear-gradient(180deg,rgba(4,14,28,0.7) 0%,transparent 100%)", backdropFilter:"blur(0px)" }}>
+            {/* Logo */}
+            <a href="#" style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:18, fontWeight:600, color:"rgba(210,235,255,0.88)", letterSpacing:"0.06em", textDecoration:"none" }}>
+              Beyond the Surface <span style={{ opacity:0.4, fontSize:14 }}>·</span>
+            </a>
+            {/* Nav links */}
+            <div style={{ display:"flex", gap:38, alignItems:"center" }}>
+              {[["SKILLS","#skills"],["PORTFOLIO","#projects"],["ABOUT","#about"],["CONTACT","#contact"]].map(([label,href]) => (
+                <motion.a key={label} href={href} whileHover={{ color:"rgba(160,215,255,0.95)" }}
+                  style={{ fontFamily:"'Space Mono',monospace", fontSize:10.5, letterSpacing:"0.18em", color:"rgba(160,210,255,0.55)", textDecoration:"none", transition:"color 0.2s" }}>
+                  {label}
+                </motion.a>
+              ))}
+            </div>
+          </motion.nav>
 
-            {/* LEFT: Island only */}
-            <div style={{ flex:"0 0 46%", position:"relative", display:"flex", alignItems:"flex-end", justifyContent:"center", paddingBottom:"4%", overflow:"hidden" }}>
-              <motion.div style={{ x:px, y:py, width:"100%", height:"100%" }}>
-                <IslandScene lineEnd={lineEnd} opacity={islandOpacity} y={islandY}/>
+          {/* ══════════════ HERO ══════════════ */}
+          <section ref={heroRef} style={{ position:"relative", zIndex:10, minHeight:"100vh", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"flex-start", overflow:"hidden", paddingTop:0 }} aria-label="Hero — Surface">
+
+            {/* Waves behind everything */}
+            <Waves/>
+
+            {/* ── HERO UPPER: full-width centered text ── */}
+            <div style={{ width:"100%", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", paddingTop:"clamp(100px,14vh,160px)", paddingBottom:0, position:"relative", zIndex:15, textAlign:"center" }}>
+
+              {/* Eyebrow */}
+              <motion.p initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.15 }}
+                style={{ fontFamily:"'Space Mono',monospace", fontSize:11, letterSpacing:"0.28em", color:"rgba(120,185,255,0.55)", textTransform:"uppercase", marginBottom:20 }}>
+                Portfolio — Beyond the Surface
+              </motion.p>
+
+              {/* BIG NAME */}
+              <motion.h1 initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.9, delay:0.25 }}
+                style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(48px,8.5vw,110px)", fontWeight:700, color:"rgba(215,240,255,0.95)", lineHeight:1.0, letterSpacing:"-0.02em", marginBottom:22 }}>
+                Nazriel Sakhiy Kurniadi
+              </motion.h1>
+
+              {/* Subtitle */}
+              <motion.p initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.38 }}
+                style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:"clamp(14px,1.5vw,18px)", color:"rgba(155,210,255,0.6)", letterSpacing:"0.08em", marginBottom:16 }}>
+                Aspiring IT Specialist &nbsp;|&nbsp; Strategic Problem Solver
+              </motion.p>
+
+              {/* Tagline */}
+              <motion.p initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.46 }}
+                style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:"clamp(13px,1.2vw,16px)", color:"rgba(120,175,230,0.5)", maxWidth:460, lineHeight:1.75, marginBottom:36 }}>
+                This website is created to promote personal skills and professional readiness in Information Technology.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.54 }}
+                style={{ display:"flex", gap:14, justifyContent:"center", flexWrap:"wrap", marginBottom:0 }}>
+                {[
+                  { label:"DIVE DEEPER",     href:"#about",  filled:true  },
+                  { label:"DOWNLOAD RESUME", href:CV_URL,    filled:false },
+                ].map(({ label, href, filled }) => (
+                  <motion.a key={label} href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    whileHover={{ scale:1.04, boxShadow: filled ? "0 8px 30px rgba(50,130,255,0.35)" : "0 8px 30px rgba(50,130,255,0.12)" }}
+                    whileTap={{ scale:0.97 }}
+                    style={{ padding:"13px 32px", background: filled ? "linear-gradient(135deg,rgba(38,98,200,0.88),rgba(20,65,160,0.78))" : "rgba(15,35,65,0.55)", border:`1.5px solid ${filled ? "rgba(80,160,255,0.5)" : "rgba(80,155,255,0.28)"}`, borderRadius:6, color: filled ? "rgba(210,238,255,0.96)" : "rgba(145,205,255,0.75)", fontFamily:"'Space Mono',monospace", fontSize:10.5, letterSpacing:"0.14em", textDecoration:"none", cursor:"none", display:"inline-block" }}>
+                    {label}
+                  </motion.a>
+                ))}
               </motion.div>
             </div>
 
-            {/* RIGHT: Name + photo + content */}
-            <div style={{ flex:"0 0 54%", position:"relative", display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"80px 48px 60px 28px", textAlign:"center" }}>
+            {/* ── HERO LOWER: island scene centered at bottom ── */}
+            <div style={{ width:"100%", flex:1, position:"relative", display:"flex", alignItems:"flex-end", justifyContent:"center", minHeight:340, zIndex:12 }}>
 
-              <Waves/>
-
-              {/* ── NAME — first thing you see ── */}
-              <motion.div initial={{ opacity:0, y:-18 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.85, delay:0.1 }}
-                style={{ marginBottom:22, position:"relative", zIndex:15, width:"100%" }}>
-                <p style={{ fontFamily:"'Space Mono',monospace", fontSize:9.5, letterSpacing:"0.35em", color:PALETTE.accentDim, textTransform:"uppercase", marginBottom:10 }}>
-                  Information Technology Student
-                </p>
-                <h1 style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(34px,4.8vw,64px)", fontWeight:700, color:PALETTE.text, lineHeight:1.04, letterSpacing:"-0.02em", marginBottom:4 }}>
-                  Nazriel Sakhiy<br/>
-                  <motion.span style={{ fontStyle:"italic", color:"rgba(98,182,255,0.82)" }}
-                    animate={{ opacity:[0.75,1,0.75] }} transition={{ duration:3.5, repeat:Infinity }}>
-                    Kurniadi
-                  </motion.span>
-                </h1>
-                <motion.div style={{ width:54, height:1.5, background:"linear-gradient(90deg,rgba(78,158,255,0.58),transparent)", margin:"16px auto 0" }}
-                  initial={{ scaleX:0, originX:0 }} animate={{ scaleX:1 }} transition={{ duration:0.9, delay:0.6 }}/>
+              {/* Island with parallax */}
+              <motion.div style={{ x:px, y:py, position:"relative", width:"100%", maxWidth:680, display:"flex", alignItems:"flex-end", justifyContent:"center" }}>
+                <IslandScene lineEnd={lineEnd} opacity={islandOpacity} y={islandY}/>
               </motion.div>
 
-              {/* ── DRAGGABLE PHOTO ── */}
-              <motion.div initial={{ opacity:0, scale:0.82 }} animate={{ opacity:1, scale:1 }} transition={{ duration:0.8, delay:0.28 }}
-                style={{ position:"relative", zIndex:20, marginBottom:28 }}>
+              {/* Draggable photo — floats above the island, centered */}
+              <motion.div initial={{ opacity:0, scale:0.8 }} animate={{ opacity:1, scale:1 }} transition={{ duration:0.9, delay:0.5 }}
+                style={{ position:"absolute", bottom:"38%", left:"50%", transform:"translateX(-50%)", zIndex:25 }}>
                 <DraggablePhoto onLineEnd={handleLineEnd} containerRef={heroRef}/>
               </motion.div>
 
-              {/* ── TAGLINE + CTA ── */}
-              <motion.div initial={{ opacity:0, y:22 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.85, delay:0.42 }}
-                style={{ position:"relative", zIndex:15, maxWidth:390, textAlign:"center" }}>
-                <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:16, color:PALETTE.textDim, lineHeight:1.82, marginBottom:30 }}>
-                  Engineering systems at the intersection of clarity and complexity — from surface interfaces to the deep architecture below.
-                </p>
-                <div style={{ display:"flex", gap:11, flexWrap:"wrap", justifyContent:"center" }}>
-                  {[
-                    { label:"Dive Deeper ↓", href:"#about",  filled:true  },
-                    { label:"View Skills",   href:"#skills", filled:false },
-                  ].map(({ label, href, filled }) => (
-                    <motion.a key={label} href={href}
-                      whileHover={{ scale:1.04, boxShadow: filled?"0 7px 26px rgba(52,138,252,0.36)":"none" }}
-                      whileTap={{ scale:0.97 }}
-                      style={{ padding:"11px 24px", background:filled?"linear-gradient(135deg,rgba(32,92,192,0.82),rgba(16,62,152,0.72))":"transparent", border:`1px solid ${filled?"rgba(72,155,255,0.42)":"rgba(72,152,255,0.28)"}`, borderRadius:7, color:filled?"rgba(200,234,255,0.95)":"rgba(142,206,255,0.78)", fontFamily:"'Space Mono',monospace", fontSize:10.5, letterSpacing:"0.1em", textDecoration:"none", cursor:"pointer", display:"inline-block" }}>
-                      {label}
-                    </motion.a>
-                  ))}
-                </div>
-              </motion.div>
-
-              {/* Scroll indicator */}
-              <motion.div style={{ position:"absolute", bottom:26, left:"50%", transform:"translateX(-50%)", display:"flex", flexDirection:"column", alignItems:"center", gap:6, opacity:scrollIndOp, zIndex:15 }}>
-                <motion.div animate={{ y:[0,8,0] }} transition={{ duration:2, repeat:Infinity }}
-                  style={{ width:19, height:32, border:"1.5px solid rgba(88,172,255,0.3)", borderRadius:10, display:"flex", justifyContent:"center", paddingTop:5 }}>
-                  <motion.div animate={{ y:[0,8,0], opacity:[1,0,1] }} transition={{ duration:2, repeat:Infinity }}
-                    style={{ width:2.5, height:5, borderRadius:2, background:"rgba(88,172,255,0.55)" }}/>
-                </motion.div>
-                <p style={{ fontFamily:"'Space Mono',monospace", fontSize:7.5, letterSpacing:"0.22em", color:"rgba(88,162,255,0.36)" }}>SCROLL</p>
+              {/* Scroll to descend indicator */}
+              <motion.div style={{ position:"absolute", bottom:18, left:"50%", transform:"translateX(-50%)", display:"flex", flexDirection:"column", alignItems:"center", gap:7, opacity:scrollIndOp, zIndex:20 }}>
+                <p style={{ fontFamily:"'Space Mono',monospace", fontSize:8.5, letterSpacing:"0.26em", color:"rgba(100,170,255,0.38)", textTransform:"uppercase" }}>Scroll to Descend</p>
+                <motion.div animate={{ y:[0,7,0] }} transition={{ duration:1.8, repeat:Infinity }}
+                  style={{ width:1, height:36, background:"linear-gradient(180deg,rgba(100,170,255,0.4),transparent)" }}/>
               </motion.div>
             </div>
           </section>
