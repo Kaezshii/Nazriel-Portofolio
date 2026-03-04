@@ -482,28 +482,55 @@ const SectionHeader = ({ label, title, subtitle }) => (
   <Reveal>
     <div style={{ textAlign:"center", marginBottom:52 }}>
       <p style={{ fontFamily:"'Space Mono',monospace", fontSize:10, letterSpacing:"0.3em", textTransform:"uppercase", color:PALETTE.accentDim, marginBottom:12 }}>{label}</p>
-      <h2 style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(28px,4.2vw,48px)", fontWeight:700, color:PALETTE.text, lineHeight:1.1, marginBottom:14, letterSpacing:"-0.01em" }}>{title}</h2>
+      <h2 style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(28px,4.2vw,48px)", fontWeight:700, color:PALETTE.text, lineHeight:1.1, marginBottom:14, letterSpacing:"-0.01em", display:"flex", justifyContent:"center", flexWrap:"wrap", gap:"0.18em" }}>
+        {title.split(" ").map((word, wi) => (
+          <WaveText key={wi} text={word} charStyle={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(28px,4.2vw,48px)", fontWeight:700, color:PALETTE.text }} />
+        ))}
+      </h2>
       {subtitle && <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:16.5, color:PALETTE.textDim, maxWidth:490, margin:"0 auto", lineHeight:1.78 }}>{subtitle}</p>}
     </div>
   </Reveal>
 );
 
 // ─────────────────────────────────────────────
-// SKILL CARD
+// WAVE TEXT — characters float on sine wave
 // ─────────────────────────────────────────────
-const SkillCard = memo(({ title, icon, skills, delay }) => (
+const WaveText = memo(({ text, style={}, charStyle={} }) => {
+  const chars = text.split("");
+  return (
+    <span style={{ display:"inline-flex", flexWrap:"wrap", ...style }}>
+      {chars.map((c, i) => (
+        <motion.span key={i}
+          animate={{ y: c === " " ? 0 : [0, -5, 0] }}
+          transition={{ duration: 2.2, delay: i * 0.06, repeat: Infinity, ease: "easeInOut" }}
+          style={{ display:"inline-block", whiteSpace: c === " " ? "pre" : "normal", ...charStyle }}>
+          {c === " " ? "\u00a0" : c}
+        </motion.span>
+      ))}
+    </span>
+  );
+});
+
+// ─────────────────────────────────────────────
+// SKILL CARD — expanded with wave title
+// ─────────────────────────────────────────────
+const SkillCard = memo(({ title, icon, skills, desc, delay }) => (
   <Reveal delay={delay}>
-    <motion.div whileHover={{ y:-5, boxShadow:"0 16px 52px rgba(28,98,198,0.2)" }}
-      style={{ background:"rgba(8,30,56,0.6)", backdropFilter:"blur(14px)", border:"1px solid rgba(68,148,228,0.16)", borderRadius:14, padding:"24px 26px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", top:0, right:0, width:68, height:68, background:"radial-gradient(circle at top right,rgba(58,138,252,0.1),transparent)", pointerEvents:"none" }}/>
-      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
-        <span style={{ fontSize:19 }}>{icon}</span>
-        <h3 style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:16.5, color:"rgba(172,220,255,0.95)", fontWeight:600, letterSpacing:"0.03em" }}>{title}</h3>
+    <motion.div whileHover={{ y:-6, boxShadow:"0 18px 55px rgba(28,98,198,0.22)" }}
+      style={{ background:"rgba(8,30,56,0.62)", backdropFilter:"blur(14px)", border:"1px solid rgba(68,148,228,0.16)", borderRadius:16, padding:"26px 28px", position:"relative", overflow:"hidden", height:"100%" }}>
+      <div style={{ position:"absolute", top:0, right:0, width:80, height:80, background:"radial-gradient(circle at top right,rgba(58,138,252,0.1),transparent)", pointerEvents:"none" }}/>
+      <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+        <motion.span animate={{ rotate:[0,8,-8,0] }} transition={{ duration:3, repeat:Infinity, delay }} style={{ fontSize:22, display:"inline-block" }}>{icon}</motion.span>
+        <WaveText text={title} charStyle={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:17, color:"rgba(172,220,255,0.95)", fontWeight:600, letterSpacing:"0.03em" }}/>
       </div>
+      {desc && <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:13.5, color:"rgba(120,185,250,0.55)", lineHeight:1.65, marginBottom:14 }}>{desc}</p>}
       <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
         {skills.map((s,i) => (
-          <motion.span key={i} initial={{ opacity:0, scale:0.85 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }} transition={{ duration:0.32, delay:delay+0.07+i*0.04 }}
-            style={{ padding:"4px 11px", borderRadius:16, fontSize:10.5, fontFamily:"'Space Mono',monospace", letterSpacing:"0.06em", background:"rgba(22,82,152,0.3)", border:"1px solid rgba(68,148,228,0.18)", color:"rgba(142,208,255,0.85)" }}>
+          <motion.span key={i}
+            initial={{ opacity:0, y:8 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+            transition={{ duration:0.3, delay:delay+0.05+i*0.035 }}
+            whileHover={{ scale:1.08, background:"rgba(38,108,218,0.45)" }}
+            style={{ padding:"4px 11px", borderRadius:16, fontSize:10.5, fontFamily:"'Space Mono',monospace", letterSpacing:"0.06em", background:"rgba(22,82,152,0.3)", border:"1px solid rgba(68,148,228,0.18)", color:"rgba(142,208,255,0.85)", cursor:"default" }}>
             {s}
           </motion.span>
         ))}
@@ -513,31 +540,182 @@ const SkillCard = memo(({ title, icon, skills, delay }) => (
 ));
 
 // ─────────────────────────────────────────────
-// PROJECT CARD
+// PROJECT CAROUSEL
 // ─────────────────────────────────────────────
-const ProjectCard = memo(({ title, tag, desc, points, delay }) => (
-  <Reveal delay={delay}>
-    <motion.div whileHover={{ y:-5, boxShadow:"0 26px 72px rgba(16,76,172,0.26)" }}
-      style={{ background:"rgba(5,22,44,0.72)", backdropFilter:"blur(18px)", border:"1px solid rgba(52,128,212,0.18)", borderRadius:18, padding:"30px 30px", position:"relative", overflow:"hidden" }}>
-      <div style={{ position:"absolute", inset:0, background:"radial-gradient(ellipse at 78% 18%,rgba(36,96,192,0.07),transparent 68%)", pointerEvents:"none" }}/>
-      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:13, flexWrap:"wrap", gap:9 }}>
-        <h3 style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:21, color:"rgba(200,234,255,0.95)", fontWeight:700, lineHeight:1.2 }}>{title}</h3>
-        <span style={{ fontFamily:"'Space Mono',monospace", fontSize:9, letterSpacing:"0.18em", color:"rgba(68,152,255,0.7)", border:"1px solid rgba(68,152,255,0.22)", padding:"3px 10px", borderRadius:16, textTransform:"uppercase" }}>{tag}</span>
+const PROJECTS = [
+  {
+    title:"Network Topology Design",
+    tag:"Cisco PT",
+    color:"rgba(0,180,120,0.18)",
+    border:"rgba(0,200,140,0.28)",
+    accent:"rgba(0,220,160,0.75)",
+    icon:"🌐",
+    desc:"Designed and simulated a multi-layer enterprise network topology using Cisco Packet Tracer, implementing VLANs, inter-VLAN routing, OSPF, and access control lists for a school-scale infrastructure.",
+    tags:["Cisco Packet Tracer","VLAN","OSPF","ACL","Subnetting"],
+    href:"https://www.canva.com/design/DAG_ij-6r4o/tAJz_7wB58qoeiZAXlttEw/edit",
+  },
+  {
+    title:"IT Infrastructure Planning",
+    tag:"Documentation",
+    color:"rgba(40,120,255,0.15)",
+    border:"rgba(60,150,255,0.28)",
+    accent:"rgba(80,170,255,0.75)",
+    icon:"🖧",
+    desc:"Comprehensive IT infrastructure planning document covering hardware procurement, server setup, network cabling standards, and disaster recovery protocols for a mid-scale organization.",
+    tags:["Network Design","Server Planning","DR Protocol","Cabling","Documentation"],
+    href:"https://www.canva.com/design/DAG3F-6TW0M/U7oUPFeW9F8gdyh4Kt7gXA/edit",
+  },
+  {
+    title:"Cybersecurity Awareness Report",
+    tag:"Security",
+    color:"rgba(200,60,60,0.15)",
+    border:"rgba(220,80,80,0.28)",
+    accent:"rgba(255,100,100,0.75)",
+    icon:"🔐",
+    desc:"Research and analysis report on cybersecurity threats targeting SMEs in Indonesia, covering phishing vectors, social engineering tactics, and a proposed mitigation framework.",
+    tags:["Threat Analysis","Phishing","Social Engineering","Risk Assessment","SME"],
+    href:"https://www.canva.com/design/DAG1BrqRy9w/cFYyivlMxu-bHPl6_4AYNw/edit",
+  },
+  {
+    title:"Database System Design",
+    tag:"SQL / ERD",
+    color:"rgba(160,80,255,0.15)",
+    border:"rgba(180,100,255,0.28)",
+    accent:"rgba(200,130,255,0.75)",
+    icon:"🗄️",
+    desc:"Full entity-relationship diagram and normalized relational database schema for a student information system, with stored procedures, indexing strategies, and query optimization documentation.",
+    tags:["ERD","SQL","Normalization","Stored Procedures","Indexing"],
+    href:"https://www.canva.com/design/DAGXL0GV1YE/49bYSYEP-ZO_ft3RSG_bVg/edit",
+  },
+  {
+    title:"Web Application Prototype",
+    tag:"HTML / CSS / JS",
+    color:"rgba(255,160,0,0.15)",
+    border:"rgba(255,180,0,0.28)",
+    accent:"rgba(255,200,60,0.75)",
+    icon:"💻",
+    desc:"Front-end prototype of a school management portal featuring responsive design, dynamic timetable generation, and student grade tracking built with vanilla HTML, CSS, and JavaScript.",
+    tags:["HTML5","CSS3","JavaScript","Responsive","UI/UX"],
+    href:"https://www.canva.com/design/DAFNUbd1MpE/cdqSICMbXHHNtXUo7PnuaQ/edit",
+  },
+  {
+    title:"Routing & Switching Lab",
+    tag:"Cisco PT",
+    color:"rgba(0,200,255,0.15)",
+    border:"rgba(0,220,255,0.28)",
+    accent:"rgba(0,240,255,0.75)",
+    icon:"📡",
+    desc:"Hands-on simulation lab series covering static and dynamic routing protocols (RIP, OSPF, EIGRP), STP, EtherChannel, and NAT/PAT configuration in Cisco Packet Tracer environments.",
+    tags:["RIP","OSPF","EIGRP","STP","NAT/PAT","EtherChannel"],
+    href:"https://www.canva.com/design/DAGX0fhV92k/35MVUtUm6GMEBD2_Apo9Zg/edit",
+  },
+  {
+    title:"IT Project Management Plan",
+    tag:"Management",
+    color:"rgba(0,180,80,0.15)",
+    border:"rgba(0,200,100,0.28)",
+    accent:"rgba(0,220,120,0.75)",
+    icon:"📋",
+    desc:"End-to-end IT project management documentation using Agile methodology — covering sprint planning, stakeholder communication matrix, risk register, and KPI dashboards for a school digitalization initiative.",
+    tags:["Agile","Sprint Planning","Risk Register","KPI","Stakeholder Mgmt"],
+    href:"https://www.canva.com/design/DAGz0A9MXy4/ntUdjWbkBmifUJ89BThBrA/edit",
+  },
+];
+
+const ProjectCarousel = memo(() => {
+  const [active, setActive] = useState(0);
+  const total = PROJECTS.length;
+  const p = PROJECTS[active];
+
+  return (
+    <Reveal>
+      <div style={{ position:"relative", width:"100%" }}>
+        {/* Nav arrows + dots */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:16, marginBottom:28 }}>
+          <motion.button whileHover={{ scale:1.15 }} whileTap={{ scale:0.9 }} onClick={() => setActive((active-1+total)%total)}
+            style={{ width:36, height:36, borderRadius:"50%", background:"rgba(15,45,90,0.7)", border:"1px solid rgba(68,148,228,0.3)", color:"rgba(140,205,255,0.85)", fontSize:16, cursor:"none", display:"flex", alignItems:"center", justifyContent:"center" }}>‹</motion.button>
+          <div style={{ display:"flex", gap:8 }}>
+            {PROJECTS.map((_,i) => (
+              <motion.button key={i} onClick={() => setActive(i)}
+                animate={{ scale: i===active ? 1.3 : 1, background: i===active ? p.accent : "rgba(68,148,228,0.25)" }}
+                style={{ width:8, height:8, borderRadius:"50%", border:"none", cursor:"none", padding:0 }}/>
+            ))}
+          </div>
+          <motion.button whileHover={{ scale:1.15 }} whileTap={{ scale:0.9 }} onClick={() => setActive((active+1)%total)}
+            style={{ width:36, height:36, borderRadius:"50%", background:"rgba(15,45,90,0.7)", border:"1px solid rgba(68,148,228,0.3)", color:"rgba(140,205,255,0.85)", fontSize:16, cursor:"none", display:"flex", alignItems:"center", justifyContent:"center" }}>›</motion.button>
+        </div>
+
+        {/* Card */}
+        <AnimatePresence mode="wait">
+          <motion.div key={active}
+            initial={{ opacity:0, y:24, rotateX:-8 }}
+            animate={{ opacity:1, y:0,  rotateX:0 }}
+            exit={{    opacity:0, y:-18, rotateX:6 }}
+            transition={{ duration:0.42, ease:"easeOut" }}
+            style={{ perspective:1000, transformStyle:"preserve-3d" }}>
+            <motion.div whileHover={{ y:-6 }}
+              style={{ background:`rgba(5,20,42,0.82)`, backdropFilter:"blur(22px)", border:`1px solid ${p.border}`, borderRadius:20, overflow:"hidden", position:"relative", boxShadow:`0 0 60px ${p.color}` }}>
+
+              {/* Glow top bar */}
+              <div style={{ height:3, background:`linear-gradient(90deg,transparent,${p.accent},transparent)` }}/>
+
+              <div style={{ padding:"36px 36px 32px" }}>
+                {/* Header */}
+                <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:18, flexWrap:"wrap", gap:12 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+                    <motion.span animate={{ scale:[1,1.12,1] }} transition={{ duration:2.5, repeat:Infinity }} style={{ fontSize:32 }}>{p.icon}</motion.span>
+                    <div>
+                      <WaveText text={p.title} charStyle={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(20px,2.8vw,28px)", color:"rgba(210,238,255,0.96)", fontWeight:700, letterSpacing:"-0.01em" }}/>
+                      <p style={{ fontFamily:"'Space Mono',monospace", fontSize:9, letterSpacing:"0.2em", color:p.accent, marginTop:4 }}>{active+1} / {total}</p>
+                    </div>
+                  </div>
+                  <motion.a href={p.href} target="_blank" rel="noopener noreferrer"
+                    whileHover={{ scale:1.05, boxShadow:`0 6px 22px ${p.color}` }}
+                    style={{ padding:"7px 18px", background:"transparent", border:`1.5px solid ${p.border}`, borderRadius:20, color:p.accent, fontFamily:"'Space Mono',monospace", fontSize:9, letterSpacing:"0.18em", textDecoration:"none", cursor:"none", textTransform:"uppercase", whiteSpace:"nowrap" }}>
+                    {p.tag} ↗
+                  </motion.a>
+                </div>
+
+                {/* Description */}
+                <motion.p
+                  key={`desc-${active}`}
+                  initial={{ opacity:0, x:16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.4, delay:0.1 }}
+                  style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:16.5, color:"rgba(155,210,255,0.72)", lineHeight:1.82, marginBottom:22 }}>
+                  {p.desc}
+                </motion.p>
+
+                {/* Tags */}
+                <div style={{ display:"flex", flexWrap:"wrap", gap:7 }}>
+                  {p.tags.map((t,i) => (
+                    <motion.span key={t}
+                      initial={{ opacity:0, scale:0.85 }} animate={{ opacity:1, scale:1 }} transition={{ duration:0.28, delay:0.12+i*0.04 }}
+                      whileHover={{ scale:1.08 }}
+                      style={{ padding:"4px 13px", borderRadius:20, fontSize:10.5, fontFamily:"'Space Mono',monospace", letterSpacing:"0.06em", background:`rgba(${p.accent.slice(5,-1)},0.12)`, border:`1px solid ${p.border}`, color:p.accent }}>
+                      {t}
+                    </motion.span>
+                  ))}
+                </div>
+
+                {/* Progress bar */}
+                <div style={{ marginTop:24, height:2, background:"rgba(255,255,255,0.05)", borderRadius:2, overflow:"hidden" }}>
+                  <motion.div
+                    animate={{ width:`${((active+1)/total)*100}%` }}
+                    transition={{ duration:0.5, ease:"easeOut" }}
+                    style={{ height:"100%", background:`linear-gradient(90deg,transparent,${p.accent})`, borderRadius:2 }}/>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Keyboard hint */}
+        <p style={{ textAlign:"center", fontFamily:"'Space Mono',monospace", fontSize:8.5, letterSpacing:"0.18em", color:"rgba(80,140,220,0.3)", marginTop:16 }}>
+          click arrows or dots to navigate
+        </p>
       </div>
-      <p style={{ fontFamily:"'Crimson Text','Georgia',serif", fontSize:15.5, color:"rgba(148,203,250,0.68)", lineHeight:1.78, marginBottom:16 }}>{desc}</p>
-      {points && (
-        <ul style={{ padding:0, margin:0, listStyle:"none" }}>
-          {points.map((p,i) => (
-            <li key={i} style={{ display:"flex", gap:8, marginBottom:6, alignItems:"flex-start" }}>
-              <span style={{ color:"rgba(68,152,255,0.55)", marginTop:3, flexShrink:0 }}>▸</span>
-              <span style={{ fontFamily:"'Space Mono',monospace", fontSize:11, color:"rgba(122,188,248,0.68)", lineHeight:1.62, letterSpacing:"0.022em" }}>{p}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </motion.div>
-  </Reveal>
-));
+    </Reveal>
+  );
+});
 
 // ─────────────────────────────────────────────
 // RESEARCH STATION
@@ -691,10 +869,12 @@ export default function App() {
                 Portfolio — Beyond the Surface
               </motion.p>
 
-              {/* BIG NAME */}
+              {/* BIG NAME — wave animated */}
               <motion.h1 initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.9, delay:0.25 }}
-                style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(48px,8.5vw,110px)", fontWeight:700, color:"rgba(215,240,255,0.95)", lineHeight:1.0, letterSpacing:"-0.02em", marginBottom:22 }}>
-                Nazriel Sakhiy Kurniadi
+                style={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(48px,8.5vw,110px)", fontWeight:700, lineHeight:1.0, letterSpacing:"-0.02em", marginBottom:22, display:"flex", justifyContent:"center", flexWrap:"wrap", gap:"0.25em" }}>
+                {["Nazriel","Sakhiy","Kurniadi"].map((word,wi) => (
+                  <WaveText key={wi} text={word} charStyle={{ fontFamily:"'Cormorant Garamond','Georgia',serif", fontSize:"clamp(48px,8.5vw,110px)", fontWeight:700, color:"rgba(215,240,255,0.95)" }}/>
+                ))}
               </motion.h1>
 
               {/* Subtitle */}
@@ -777,41 +957,36 @@ export default function App() {
 
           {/* ══════════════ SKILLS ══════════════ */}
           <section id="skills" aria-label="Skills" style={{ position:"relative", zIndex:10, width:"100%" }}>
-            <div style={{ maxWidth:1060, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
+            <div style={{ maxWidth:1100, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
               <SectionHeader label="/ 02 — Capability" title="The Deep Ocean Ecosystem" subtitle="Skills cultivated through pressure, iteration, and depth of exploration."/>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(285px,1fr))", gap:20 }}>
-                <SkillCard title="Technical Skills" icon="⚙️" delay={0}   skills={["HTML5 & CSS3","JavaScript ES2024","React","Python","SQL","REST APIs","Git & Version Control","Data Structures","Algorithms","System Design"]}/>
-                <SkillCard title="Development Tools" icon="🔧" delay={0.1} skills={["VS Code","Vite","Node.js","npm / yarn","Git & GitHub","Figma","Chrome DevTools","Postman","Linux CLI","Docker Fundamentals"]}/>
-                <SkillCard title="Core Strengths"    icon="🧠" delay={0.2} skills={["Analytical Thinking","System Architecture","Attention to Detail","Rapid Learning","Problem Decomposition","Technical Communication","Clean Code","Performance Awareness"]}/>
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))", gap:20 }}>
+                <SkillCard title="Networking & Cisco" icon="🌐" delay={0}
+                  desc="Hands-on experience designing and simulating enterprise networks using Cisco Packet Tracer."
+                  skills={["Cisco Packet Tracer","VLAN","OSPF","RIP","EIGRP","STP","NAT/PAT","ACL","Subnetting","EtherChannel","Inter-VLAN Routing","Network Topology"]}/>
+                <SkillCard title="Programming & Web" icon="💻" delay={0.08}
+                  desc="Building functional interfaces and back-end logic with modern web technologies."
+                  skills={["HTML5","CSS3","JavaScript","React","Python","SQL","REST APIs","Git","Node.js","Vite","Responsive Design","DOM Manipulation"]}/>
+                <SkillCard title="Systems & Infrastructure" icon="🖥️" delay={0.16}
+                  desc="Understanding of OS internals, server management, and IT infrastructure planning."
+                  skills={["Linux CLI","Windows Server","Active Directory","DNS/DHCP","Virtualization","Docker Fundamentals","Bash Scripting","System Administration","IT Documentation"]}/>
+                <SkillCard title="Security & Analysis" icon="🔐" delay={0.24}
+                  desc="Security-aware mindset with exposure to threat modeling and risk assessment frameworks."
+                  skills={["Cybersecurity Fundamentals","Threat Analysis","Risk Assessment","Firewall Config","Wireshark","Network Monitoring","Social Engineering Awareness","CIA Triad"]}/>
+                <SkillCard title="Database & Data" icon="🗄️" delay={0.32}
+                  desc="Designing normalized databases and writing efficient queries for real-world data systems."
+                  skills={["MySQL","ERD Design","Normalization","Stored Procedures","Indexing","Data Modeling","Query Optimization","DBMS Concepts"]}/>
+                <SkillCard title="Soft Skills & Tools" icon="🧠" delay={0.40}
+                  desc="Cross-functional capabilities that turn technical work into meaningful outcomes."
+                  skills={["Analytical Thinking","Technical Writing","Project Management","Agile/Scrum","Problem Decomposition","Team Collaboration","Presentation","Canva","Figma","MS Office"]}/>
               </div>
             </div>
           </section>
 
           {/* ══════════════ PROJECTS ══════════════ */}
           <section id="projects" aria-label="Projects" style={{ position:"relative", zIndex:10, width:"100%" }}>
-            <div style={{ maxWidth:960, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
-              <SectionHeader label="/ 03 — Engineering" title="Constructed With Intent" subtitle="Systems designed from the seabed up — each a demonstration of deliberate architecture."/>
-              <div style={{ display:"flex", flexDirection:"column", gap:24 }}>
-                <ProjectCard title="Deep Ocean Portfolio" tag="Live" delay={0}
-                  desc="A production-grade interactive portfolio engineered with React, Framer Motion, and a centralized scroll-driven depth controller. Every visual layer responds dynamically to scroll progress."
-                  points={[
-                    "Centralized depth controller interpolating gradients, brightness & parallax via scroll",
-                    "Canvas-based particle & fish systems — 60fps with zero DOM node overhead",
-                    "Physics-based draggable photo: spring animation, elastic bounds, fishing line tension",
-                    "Scroll-triggered fish scaling with depth; low-opacity shark at deepest layer",
-                    "Staged loading sequence with multi-phase initialization simulation",
-                    "Glassmorphic skill panels with staggered whileInView entrance animations",
-                    "SVG research station contact section with animated glowing windows",
-                    "Fully responsive 320px–4K, Rules-of-Hooks compliant, memo-optimized throughout",
-                  ]}/>
-                <ProjectCard title="Ongoing Development" tag="In Progress" delay={0.16}
-                  desc="The ocean floor is never fully mapped. Future systems include full-stack applications, algorithmic visualizations, and tools built from first principles."
-                  points={[
-                    "Component-ready architecture — new projects require zero structural changes",
-                    "Scalable declarative data model for filtering by domain and technology",
-                    "Depth-tagged categorization system planned for future rollout",
-                  ]}/>
-              </div>
+            <div style={{ maxWidth:820, margin:"0 auto", padding:"108px clamp(20px,6vw,88px)" }}>
+              <SectionHeader label="/ 03 — Engineering" title="Project Experience" subtitle="IT documentation, network simulations, and system designs — built with intent."/>
+              <ProjectCarousel/>
             </div>
           </section>
 
